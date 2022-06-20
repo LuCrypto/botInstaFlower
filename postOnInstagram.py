@@ -18,13 +18,23 @@ def getTags():
     nombre_tags = randrange(20,len(tableau_tags))
     nombre_a_enlever = len(tableau_tags) - nombre_tags
 
-    print("tableau_tags : ", tableau_tags)
+    # print("tableau_tags : ", tableau_tags)
     for i in range(nombre_a_enlever):
         indice_random = randrange(0,len(tableau_tags))
         del tableau_tags[indice_random]
+
+    nouveau_tableau_tags = []
+
+    # On prends seulement les elements uniques
+    for i in range(len(tableau_tags)):
+        good = True
+        for j in range(len(nouveau_tableau_tags)):
+            if (tableau_tags[i] == nouveau_tableau_tags[j]):
+                good = False
+        if (good):
+            nouveau_tableau_tags.append(tableau_tags[i])
     
-    resultat_string = ' '.join(tableau_tags)
-    print("resultat_string : ", resultat_string)
+    resultat_string = ' '.join(nouveau_tableau_tags)
 
     return resultat_string
 
@@ -45,7 +55,7 @@ def getCitations():
     
     # Mise à jour used
     with open(nomFichier, 'w') as myFile:
-        myFile.write(json.dumps(tableau_citations))
+        myFile.write(json.dumps(monjson))
 
     return tableau_citations[indice_random]['texte'] + "\n" + tableau_citations[indice_random]['auteur']
 
@@ -75,7 +85,7 @@ def getImage():
         tags_bonus += "#" + tableau_images[indice_random]['tags'][i] + " "
     
     print("chemin : ", chemin)
-    print("tags_bonus : ", tags_bonus)
+    # print("tags_bonus : ", tags_bonus)
 
     return chemin, tags_bonus, tableau_images[indice_random]['source']
 
@@ -94,6 +104,8 @@ def posterImage():
 
     chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
     driver = webdriver.Chrome(executable_path=PATH, chrome_options=chrome_options)
+    # Pour éviter les problèmes de coordonnées
+    driver.maximize_window()
 
     driver.implicitly_wait(10)
 
@@ -102,6 +114,8 @@ def posterImage():
 
     # On accepte les cookies
     driver.find_element(By.CLASS_NAME, "HoLwm").click()
+    # On attends 2 secondes
+    time.sleep(2)
 
     # On récupère login + password pour l'authentification
     tableau = driver.find_elements(By.CLASS_NAME, "zyHYP")
@@ -120,7 +134,12 @@ def posterImage():
     driver.find_element(By.CLASS_NAME, "_a9_1").click()
 
     # On récupère le bouton pour ajouter une publication
-    driver.find_elements(By.CLASS_NAME, "_ab6-")[3].click()
+    tableau_elements = driver.find_elements(By.CLASS_NAME, "_ab6-")
+    for i in range(len(tableau_elements)):
+        if (tableau_elements[i].get_attribute("aria-label") == "New post"):
+            # print("trouve !")
+            tableau_elements[i].click()
+        # print("attribut : ", tableau_elements[i].get_attribute("aria-label"))
 
     # 0 -> ne fait rien
     # 1 -> Change la photo de profil
@@ -130,11 +149,17 @@ def posterImage():
     chemin_image, tags_bonus, source_image = getImage()
     tableau_input = driver.find_elements(By.XPATH, "//input")
     tableau_input[3].send_keys(chemin_image)
+    time.sleep(1)
 
+    # On selectionne l'image
+    driver.find_element(By.CLASS_NAME, "_aabm").click()
+
+    time.sleep(1)
     # On clique sur next
     div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
     bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
     bouton_next.click()
+    time.sleep(1)
 
     # Filters/Adjustements
     # TODO
@@ -143,12 +168,17 @@ def posterImage():
     div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
     bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
     bouton_next.click()
+    time.sleep(1)
 
     citation = getCitations()
     tags = getTags()
-    description = citation + "\n\n" + "Source : " + source_image + "\n\n" + tags + " " + tags_bonus
+    # + " " + tags_bonus
+    description = citation + "\n\n" + "Source : " + "pixabay" + "\n\n" + tags
+    print("description : ", description)
     # Permet de mettre un commentaire au post ainsi que les hashtags
-    driver.find_element(By.CLASS_NAME, "_ablz").send_keys(description)
+    tableau_commentaire = driver.find_elements(By.CLASS_NAME, "_ablz")
+    tableau_commentaire[len(tableau_commentaire)-1].send_keys(description)
+    time.sleep(3)
 
     # On clique sur share
     div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
@@ -156,8 +186,13 @@ def posterImage():
     bouton_next.click()
     time.sleep(15)
 
+
+print("On attends...")
+# time.sleep(1800)
 while (True):
+    print("=========POSTER=============")
     posterImage()
+    print("=========ATTENDRE===========")
     # 30 min
     time.sleep(1800)
 

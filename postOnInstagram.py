@@ -1,4 +1,3 @@
-from numpy import true_divide
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -166,50 +165,58 @@ def posterImage():
             tableau_elements[i].click()
         # print("attribut : ", tableau_elements[i].get_attribute("aria-label"))
 
-    # 0 -> ne fait rien
-    # 1 -> Change la photo de profil
-    # 2 -> Mets le texte dans la barred de recherche
-    # 3 -> Mets l'image pour la publication -> trouvé !
-    # On envoie l'image
-    chemin_image, tags_bonus, source_image = getImage()
-    tableau_input = driver.find_elements(By.XPATH, "//input")
-    tableau_input[3].send_keys(chemin_image)
-    time.sleep(1)
+    reussi = False
+    # Publication image
+    while (not(reussi)):
+        try:
+            # 0 -> ne fait rien
+            # 1 -> Change la photo de profil
+            # 2 -> Mets le texte dans la barred de recherche
+            # 3 -> Mets l'image pour la publication -> trouvé !
+            # On envoie l'image
+            chemin_image, tags_bonus, source_image = getImage()
+            tableau_input = driver.find_elements(By.XPATH, "//input")
+            tableau_input[3].send_keys(chemin_image)
+            time.sleep(1)
 
-    # On selectionne l'image
-    driver.find_element(By.CLASS_NAME, "_aabm").click()
+            # On selectionne l'image
+            driver.find_element(By.CLASS_NAME, "_aabm").click()
 
-    time.sleep(1)
-    # On clique sur next
-    div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
-    bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
-    bouton_next.click()
-    time.sleep(1)
+            time.sleep(1)
+            # On clique sur next
+            div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
+            bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
+            bouton_next.click()
+            time.sleep(1)
 
-    # Filters/Adjustements
-    # TODO
+            # Filters/Adjustements
+            # TODO
 
-    # On clique sur next
-    div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
-    bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
-    bouton_next.click()
-    time.sleep(1)
+            # On clique sur next
+            div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
+            bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
+            bouton_next.click()
+            time.sleep(1)
 
-    citation = getCitations()
-    tags = getTags()
-    # + " " + tags_bonus
-    description = citation + "\n\n" + "Source : " + "pixabay" + "\n\n" + tags
-    print("description : ", description)
-    # Permet de mettre un commentaire au post ainsi que les hashtags
-    tableau_commentaire = driver.find_elements(By.CLASS_NAME, "_ablz")
-    tableau_commentaire[len(tableau_commentaire)-1].send_keys(description)
-    time.sleep(3)
+            citation = getCitations()
+            tags = getTags()
+            # + " " + tags_bonus
+            description = citation + "\n\n" + "Source : " + "pixabay" + "\n\n" + tags
+            print("description : ", description)
+            # Permet de mettre un commentaire au post ainsi que les hashtags
+            tableau_commentaire = driver.find_elements(By.CLASS_NAME, "_ablz")
+            tableau_commentaire[len(tableau_commentaire)-1].send_keys(description)
+            time.sleep(3)
 
-    # On clique sur share
-    div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
-    bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
-    bouton_next.click()
-    time.sleep(15)
+            # On clique sur share
+            div_bouton_next = driver.find_element(By.CLASS_NAME, "_abaa")
+            bouton_next = div_bouton_next.find_element(By.CLASS_NAME, "_acan")
+            bouton_next.click()
+            time.sleep(15)
+            reussi = True
+        except:
+            print("On recommence PUBLICATION !")
+            reussi = False
 
 
 print("On attends...")

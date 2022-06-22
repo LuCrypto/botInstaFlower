@@ -130,9 +130,34 @@ def posterImage():
     # On attends 10 secondes
     time.sleep(10)
 
-    # Turn off notifications
-    driver.find_element(By.CLASS_NAME, "_a9_1").click()
+    # Si on me demande de save
+    reussi = False
+    max_fois = 1
+    while (not(reussi)):
+        try:
+            driver.find_elements(By.CLASS_NAME, "sqdOP")[1].click()
+            reussi = True
+        except:
+            max_fois -= 1
+            reussi = False
+            if (max_fois == 0):
+                reussi = True
+            print("On recommence 1 !")
 
+    # Turn off notifications
+    reussi = False
+    max_fois = 1
+    while (not(reussi)):
+        try:
+            driver.find_element(By.CLASS_NAME, "_a9_1").click()
+            reussi = True
+        except:
+            max_fois -= 1
+            reussi = False
+            if (max_fois == 0):
+                reussi = True
+            print("On recommence 2 !")
+    
     # On récupère le bouton pour ajouter une publication
     tableau_elements = driver.find_elements(By.CLASS_NAME, "_ab6-")
     for i in range(len(tableau_elements)):

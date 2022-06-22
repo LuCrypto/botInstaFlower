@@ -15,7 +15,7 @@ def getTags():
         tableau_tags = content.split("\n")
         print("longueur : ", len(tableau_tags))
 
-    nombre_tags = randrange(20,len(tableau_tags))
+    nombre_tags = 30
     nombre_a_enlever = len(tableau_tags) - nombre_tags
 
     # print("tableau_tags : ", tableau_tags)

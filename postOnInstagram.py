@@ -51,12 +51,8 @@ def getCitations():
                 element_valide = True
 
         tableau_citations[indice_random]['used'] = True
-    
-    # Mise à jour used
-    with open(nomFichier, 'w') as myFile:
-        myFile.write(json.dumps(monjson))
 
-    return tableau_citations[indice_random]['texte'] + "\n" + tableau_citations[indice_random]['auteur']
+    return tableau_citations[indice_random]['texte'] + "\n" + tableau_citations[indice_random]['auteur'], monjson
 
 # Fonction permettant de récupérer le chemin d'une image enregistrée au préalable
 def getImage():
@@ -72,10 +68,6 @@ def getImage():
                 element_valide = True
 
         tableau_images[indice_random]['used'] = True
-    
-    # Mise à jour used
-    with open(nomFichier, 'w') as myFile:
-        myFile.write(json.dumps(monjson))
 
     chemin = os.path.abspath("images/" + tableau_images[indice_random]['nomImage'])
 
@@ -86,7 +78,7 @@ def getImage():
     print("chemin : ", chemin)
     # print("tags_bonus : ", tags_bonus)
 
-    return chemin, tags_bonus, tableau_images[indice_random]['source']
+    return chemin, tags_bonus, tableau_images[indice_random]['source'], monjson
 
 # Permet de poster une image sur instagram
 def posterImage():
@@ -172,7 +164,7 @@ def posterImage():
             # 2 -> Mets le texte dans la barred de recherche
             # 3 -> Mets l'image pour la publication -> trouvé !
             # On envoie l'image
-            chemin_image, tags_bonus, source_image = getImage()
+            chemin_image, tags_bonus, source_image, mon_json_image = getImage()
             tableau_input = driver.find_elements(By.XPATH, "//input")
             tableau_input[3].send_keys(chemin_image)
             time.sleep(1)
@@ -196,10 +188,10 @@ def posterImage():
             bouton_next.click()
             time.sleep(1)
 
-            citation = getCitations()
+            citation, json_citations = getCitations()
             tags = getTags()
             # + " " + tags_bonus
-            description = citation + "\n\n" + "Source : " + "pixabay" + "\n\n" + tags
+            description = citation + "\n\n" + "Source : " + source_image + "\n\n" + tags
             print("description : ", description)
             # Permet de mettre un commentaire au post ainsi que les hashtags
             tableau_commentaire = driver.find_elements(By.CLASS_NAME, "_ablz")
@@ -215,6 +207,12 @@ def posterImage():
         except:
             print("On recommence PUBLICATION !")
             reussi = False
+
+    # Mise à jour used
+    with open("infosEnregistrement.json", 'w') as myFile:
+        myFile.write(json.dumps(mon_json_image))
+    with open("infosProverbes.json", 'w') as myFile:
+        myFile.write(json.dumps(json_citations))
 
 
 print("On attends...")

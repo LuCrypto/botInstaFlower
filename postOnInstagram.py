@@ -156,19 +156,17 @@ def posterImage():
             if (max_fois == 0):
                 reussi = True
             print("On recommence 2 !")
-    
-    # On récupère le bouton pour ajouter une publication
-    tableau_elements = driver.find_elements(By.CLASS_NAME, "_ab6-")
-    for i in range(len(tableau_elements)):
-        if (tableau_elements[i].get_attribute("aria-label") == "New post"):
-            # print("trouve !")
-            tableau_elements[i].click()
-        # print("attribut : ", tableau_elements[i].get_attribute("aria-label"))
 
     reussi = False
     # Publication image
     while (not(reussi)):
         try:
+            # On récupère le bouton pour ajouter une publication
+            tableau_elements = driver.find_elements(By.CLASS_NAME, "_ab6-")
+            for i in range(len(tableau_elements)):
+                if (tableau_elements[i].get_attribute("aria-label") == "Nouvelle publication"):
+                    tableau_elements[i].click()
+
             # 0 -> ne fait rien
             # 1 -> Change la photo de profil
             # 2 -> Mets le texte dans la barred de recherche

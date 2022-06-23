@@ -1,0 +1,43 @@
+Traceback (most recent call last):
+  File "C:\Users\Luc\Desktop\botfleurinstagram\postOnInstagram.py", line 226, in <module>
+    posterImage()
+  File "C:\Users\Luc\Desktop\botfleurinstagram\postOnInstagram.py", line 163, in posterImage
+    if (tableau_elements[i].get_attribute("aria-label") == "Nouvelle publication"):
+  File "C:\Users\Luc\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\webelement.py", line 173, in get_attribute
+    attribute_value = self.parent.execute_script(
+  File "C:\Users\Luc\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 
+884, in execute_script
+    return self.execute(command, {
+  File "C:\Users\Luc\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 
+430, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\Luc\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 247, in check_response
+    raise exception_class(message, screen, stacktrace)        
+selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: element is not attached to the 
+page document
+  (Session info: chrome=102.0.5005.115)
+Stacktrace:
+Backtrace:
+        Ordinal0 [0x003BD953+2414931]
+        Ordinal0 [0x0034F5E1+1963489]
+        Ordinal0 [0x0023C6B8+837304]
+        Ordinal0 [0x0023F0B4+848052]
+        Ordinal0 [0x0023EF72+847730]
+        Ordinal0 [0x0023F8EA+850154]
+        Ordinal0 [0x00295249+1200713]
+        Ordinal0 [0x0028449C+1131676]
+        Ordinal0 [0x00294812+1198098]
+        Ordinal0 [0x002842B6+1131190]
+        Ordinal0 [0x0025E860+976992]
+        Ordinal0 [0x0025F756+980822]
+        GetHandleVerifier [0x0062CC62+2510274]
+        GetHandleVerifier [0x0061F760+2455744]
+        GetHandleVerifier [0x0044EABA+551962]
+        GetHandleVerifier [0x0044D916+547446]
+        Ordinal0 [0x00355F3B+1990459]
+        Ordinal0 [0x0035A898+2009240]
+        Ordinal0 [0x0035A985+2009477]
+        Ordinal0 [0x00363AD1+2046673]
+        BaseThreadInitThunk [0x7654FA29+25]
+        RtlGetAppContainerNamedObjectPath [0x77917A7E+286]    
+        RtlGetAppContainerNamedObjectPath [0x77917A4E+238]  

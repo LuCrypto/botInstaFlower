@@ -6,9 +6,11 @@ import json
 import os
 from random import randrange
 
+chemin_en_plus = "botfleurinstagram/"
+
 # Fonction permettant de récupérer un ensemble de tags prédéfinis
 def getTags():
-    nomFichier = "differentsTags.txt"
+    nomFichier = chemin_en_plus+"differentsTags.txt"
     with open(nomFichier, 'r') as myFile:
         content = myFile.read()
         tableau_tags = content.split("\n")
@@ -39,7 +41,7 @@ def getTags():
 
 # Fonction permettant de récupérer une citation avec son auteur
 def getCitations():
-    nomFichier = "infosProverbes.json"
+    nomFichier = chemin_en_plus+"infosProverbes.json"
     with open(nomFichier, 'r') as myFile:
         monjson = json.loads(myFile.read())
         tableau_citations = monjson['proverbes']
@@ -56,7 +58,7 @@ def getCitations():
 
 # Fonction permettant de récupérer le chemin d'une image enregistrée au préalable
 def getImage():
-    nomFichier = "infosEnregistrement.json"
+    nomFichier = chemin_en_plus+"infosEnregistrement.json"
     with open(nomFichier, 'r') as myFile:
         monjson = json.loads(myFile.read())
         tableau_images = monjson['images']
@@ -69,7 +71,7 @@ def getImage():
 
         tableau_images[indice_random]['used'] = True
 
-    chemin = os.path.abspath("images/" + tableau_images[indice_random]['nomImage'])
+    chemin = os.path.abspath(chemin_en_plus+"images/" + tableau_images[indice_random]['nomImage'])
 
     tags_bonus = ""
     for i in range(len(tableau_images[indice_random]['tags'])):
@@ -81,7 +83,7 @@ def getImage():
     return chemin, tags_bonus, tableau_images[indice_random]['source'], monjson
 
 # Permet de poster une image sur instagram
-def posterImage():
+def posterImageFleur():
     # Initialisation
     # =============================================================================
     url = "https://www.instagram.com/"
@@ -118,8 +120,22 @@ def posterImage():
     # Bouton connection
     driver.find_element(By.CLASS_NAME, "CovQj").click()
 
-    # On attends 10 secondes
-    time.sleep(10)
+    # On attends 5 secondes
+    time.sleep(5)
+
+    probleme = False
+    try:
+        driver.find_element(By.ID, "slfErrorAlert")
+        driver.close()
+        probleme = True
+    except:
+        print("Pas de probleme...")
+    
+    if (probleme):
+        return posterImageFleur()
+
+    # On attends 5 secondes
+    time.sleep(5)
 
     # Si on me demande de save
     reussi = False
@@ -164,6 +180,7 @@ def posterImage():
             # 2 -> Mets le texte dans la barred de recherche
             # 3 -> Mets l'image pour la publication -> trouvé !
             # On envoie l'image
+            print("On envoie l'image")
             chemin_image, tags_bonus, source_image, mon_json_image = getImage()
             tableau_input = driver.find_elements(By.XPATH, "//input")
             tableau_input[3].send_keys(chemin_image)
@@ -209,19 +226,20 @@ def posterImage():
             reussi = False
 
     # Mise à jour used
-    with open("infosEnregistrement.json", 'w') as myFile:
+    with open(chemin_en_plus+"infosEnregistrement.json", 'w') as myFile:
         myFile.write(json.dumps(mon_json_image))
-    with open("infosProverbes.json", 'w') as myFile:
+    with open(chemin_en_plus+"infosProverbes.json", 'w') as myFile:
         myFile.write(json.dumps(json_citations))
 
 
-print("On attends...")
-# time.sleep(1800)
-while (True):
-    print("=========POSTER=============")
-    posterImage()
-    print("=========ATTENDRE===========")
-    # 30 min
-    time.sleep(1800)
+# print("On attends...")
+# while (True):
+#     print("=========POSTER=============")
+#     posterImageFleur()
+#     print("=========ATTENDRE===========")
+
+    
+#     # 30-50 min
+#     time.sleep(randrange(1800, 3000))
 
 

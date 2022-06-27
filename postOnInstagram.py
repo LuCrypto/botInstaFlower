@@ -46,15 +46,24 @@ def getCitations():
         monjson = json.loads(myFile.read())
         tableau_citations = monjson['proverbes']
 
+        tableau_citations_2 = []
+
+        for i in range(len(tableau_citations)):
+            if (not(tableau_citations[i]['used'])):
+                tableau_citations_2.append(tableau_citations[i])
+        
+        if (tableau_citations_2.count == 0):
+            return "", ""
+
         element_valide = False
         while(not(element_valide)):
-            indice_random = randrange(0,len(tableau_citations))
-            if (not(tableau_citations[indice_random]['used'])):
+            indice_random = randrange(0,len(tableau_citations_2))
+            if (not(tableau_citations_2[indice_random]['used'])):
                 element_valide = True
 
-        tableau_citations[indice_random]['used'] = True
+        tableau_citations_2[indice_random]['used'] = True
 
-    return tableau_citations[indice_random]['texte'] + "\n" + tableau_citations[indice_random]['auteur'], monjson
+    return tableau_citations_2[indice_random]['texte'] + "\n" + tableau_citations_2[indice_random]['auteur'], monjson
 
 # Fonction permettant de récupérer le chemin d'une image enregistrée au préalable
 def getImage():
@@ -63,24 +72,32 @@ def getImage():
         monjson = json.loads(myFile.read())
         tableau_images = monjson['images']
 
+        tableau_images_2 = []
+        for i in range(len(tableau_images)):
+            if (not(tableau_images[i]['used'])):
+                tableau_images_2.append(tableau_images[i])
+        
+        if (tableau_images_2.count == 0):
+            return "", "", "", ""
+
         element_valide = False
         while(not(element_valide)):
-            indice_random = randrange(0,len(tableau_images))
-            if (not(tableau_images[indice_random]['used'])):
+            indice_random = randrange(0,len(tableau_images_2))
+            if (not(tableau_images_2[indice_random]['used'])):
                 element_valide = True
 
-        tableau_images[indice_random]['used'] = True
+        tableau_images_2[indice_random]['used'] = True
 
-    chemin = os.path.abspath(chemin_en_plus+"images/" + tableau_images[indice_random]['nomImage'])
+    chemin = os.path.abspath(chemin_en_plus+"images/" + tableau_images_2[indice_random]['nomImage'])
 
     tags_bonus = ""
-    for i in range(len(tableau_images[indice_random]['tags'])):
-        tags_bonus += "#" + tableau_images[indice_random]['tags'][i] + " "
+    for i in range(len(tableau_images_2[indice_random]['tags'])):
+        tags_bonus += "#" + tableau_images_2[indice_random]['tags'][i] + " "
     
     print("chemin : ", chemin)
     # print("tags_bonus : ", tags_bonus)
 
-    return chemin, tags_bonus, tableau_images[indice_random]['source'], monjson
+    return chemin, tags_bonus, tableau_images_2[indice_random]['source'], monjson
 
 # Permet de poster une image sur instagram
 def posterImageFleur():
@@ -192,6 +209,11 @@ def posterImageFleur():
             # On envoie l'image
             print("On envoie l'image")
             chemin_image, tags_bonus, source_image, mon_json_image = getImage()
+            if (chemin_image == ""):
+                print("Pas d'image disponible !")
+                driver.close()
+                return
+
             tableau_input = driver.find_elements(By.XPATH, "//input")
             tableau_input[3].send_keys(chemin_image)
             time.sleep(1)
@@ -216,6 +238,12 @@ def posterImageFleur():
             time.sleep(1)
 
             citation, json_citations = getCitations()
+            # Plus de citation valide
+            if (citation == ""):
+                print("Plus de citation valide !")
+                driver.close()
+                return 
+            
             tags = getTags()
             # + " " + tags_bonus
             description = citation + "\n\n" + "Source : " + source_image + "\n\n" + tags

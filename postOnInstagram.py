@@ -234,6 +234,11 @@ def posterImageFleur():
         except:
             print("On recommence PUBLICATION !")
             reussi = False
+            driver.close()
+            break
+        
+    if (not(reussi)):
+        return posterImageFleur()
 
     # Mise à jour used
     with open(chemin_en_plus+"infosEnregistrement.json", 'w') as myFile:

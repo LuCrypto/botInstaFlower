@@ -105,20 +105,30 @@ def posterImageFleur():
     # Ouvrir la page
     driver.get(url)
 
-    # On accepte les cookies
-    driver.find_element(By.CLASS_NAME, "HoLwm").click()
-    # On attends 2 secondes
-    time.sleep(2)
+    probleme = False
+    # Publication image
+    try:
+        # On accepte les cookies
+        driver.find_element(By.CLASS_NAME, "HoLwm").click()
+        # On attends 2 secondes
+        time.sleep(2)
 
-    # On récupère login + password pour l'authentification
-    tableau = driver.find_elements(By.CLASS_NAME, "zyHYP")
-    login = tableau[0]
-    login.send_keys("lucjager67@gmail.com")
-    password = tableau[1]
-    password.send_keys("j14EDCsTeiNlDHvIXTFq")
+        # On récupère login + password pour l'authentification
+        tableau = driver.find_elements(By.CLASS_NAME, "zyHYP")
+        login = tableau[0]
+        login.send_keys("lucjager67@gmail.com")
+        password = tableau[1]
+        password.send_keys("j14EDCsTeiNlDHvIXTFq")
 
-    # Bouton connection
-    driver.find_element(By.CLASS_NAME, "CovQj").click()
+        # Bouton connection
+        driver.find_element(By.CLASS_NAME, "CovQj").click()
+    except:
+        print("Probleme connection chien")
+        driver.close()
+        probleme = True
+
+    if (probleme):
+        return posterImageFleur()
 
     # On attends 5 secondes
     time.sleep(5)

@@ -45,8 +45,13 @@ def enregistrerImages():
     with open(fichierInfos, 'r') as myFile:
         monJson = json.loads(myFile.read())
         print("monJson : ", monJson['nombre'])
+    
+    # Next page
+    nombre_page_passee = 7
+    for i in range(nombre_page_passee):
+        driver.find_elements(By.CLASS_NAME, "button--1X-kp")[1].click()
 
-    nombre_page = 7
+    nombre_page = 10
     # Boucle sur les différentes pages récupérées
     for k in range(nombre_page):
         # Boucle sur les différentes images de la page
@@ -121,4 +126,4 @@ def enregistrerImages():
     with open(fichierInfos, 'w') as myFile:
         myFile.write(json.dumps(monJson))
 
-# enregistrerImages()
+enregistrerImages()
